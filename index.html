@@ -296,7 +296,7 @@ function vLogin(){
   return `<section class="card login"><h2>Entrar a Teccel</h2><p class="hint" style="margin-bottom:14px">Poné tu nombre y el PIN. Queda guardado en este dispositivo.</p><div class="form">
     ${API_URL?'':`<label>Dirección de la API<input id="l-url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc((sess()||{}).url||'')}"></label>`}
     <label>Tu nombre<input id="l-user" list="dl-users" autocomplete="name"><datalist id="dl-users"><option value="Jose"><option value="Luz"><option value="Cele"></datalist></label>
-    <label>PIN<input id="l-pin" type="password" inputmode="numeric" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrar()"></label>
+    <label>PIN<input id="l-pin" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrar()"></label>
     <div><button class="btn gamer" id="l-btn" onclick="entrar()">Entrar</button></div>
   </div></section>`;
 }
