@@ -213,7 +213,7 @@ async function api(action,data,auth){
   try{r=await fetch(url,{method:'POST',headers:{'Content-Type':'text/plain;charset=utf-8'},body:JSON.stringify({action,data,pin:s.pin,user:s.user})})}
   catch(e){throw new Error('Sin conexión con la planilla. Revisá internet y probá de nuevo.')}
   let j;try{j=await r.json()}catch(e){throw new Error('La planilla no respondió bien. Revisá la URL de la API.')}
-  if(!j.ok){if(j.error==='PIN incorrecto'&&!auth){setSess(null);ready=false;render()}throw new Error(j.error||'Error')}
+  if(!j.ok){if(j.error==='Contraseña incorrecta'&&!auth){setSess(null);ready=false;render()}throw new Error(j.error||'Error')}
   if(j.data){applyData(j.data);lastSync=new Date()}
   return j;
 }
@@ -293,18 +293,18 @@ function render(){
   UI.lastTab=UI.tab;keep=true;
 }
 function vLogin(){
-  return `<section class="card login"><h2>Entrar a Teccel</h2><p class="hint" style="margin-bottom:14px">Poné tu nombre y el PIN. Queda guardado en este dispositivo.</p><div class="form">
+  return `<section class="card login"><h2>Entrar a Teccel</h2><p class="hint" style="margin-bottom:14px">Elegí tu usuario y poné la contraseña. Queda guardado en este dispositivo.</p><div class="form">
     ${API_URL?'':`<label>Dirección de la API<input id="l-url" placeholder="https://script.google.com/macros/s/…/exec" value="${esc((sess()||{}).url||'')}"></label>`}
-    <label>Tu nombre<input id="l-user" list="dl-users" autocomplete="name"><datalist id="dl-users"><option value="Jose"><option value="Luz"><option value="Cele"></datalist></label>
-    <label>PIN<input id="l-pin" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrar()"></label>
+    <label>Usuario<select id="l-user"><option value="">Elegí quién sos…</option>${['Luz','Cele','Jose'].map(u=>`<option ${(sess()||{}).user===u?'selected':''}>${u}</option>`).join('')}</select></label>
+    <label>Contraseña<input id="l-pin" type="password" autocapitalize="off" autocorrect="off" spellcheck="false" autocomplete="current-password" onkeydown="if(event.key==='Enter')entrar()"></label>
     <div><button class="btn gamer" id="l-btn" onclick="entrar()">Entrar</button></div>
   </div></section>`;
 }
 async function entrar(){
   const url=API_URL||val('#l-url'),user=val('#l-user'),pin=val('#l-pin');
   if(!url)return toast('Pegá la dirección de la API',true);
-  if(!user)return toast('Escribí tu nombre',true);
-  if(!pin)return toast('Poné el PIN',true);
+  if(!user)return toast('Elegí tu usuario',true);
+  if(!pin)return toast('Poné la contraseña',true);
   const b=$('#l-btn');b.disabled=true;b.textContent='Entrando…';
   try{
     const j=await api('login',null,{url,user,pin});
